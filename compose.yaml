@@ -1,0 +1,17 @@
+services:
+  laya:
+    build: ./docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - laya_models:/models/huggingface
+    environment:
+      HF_HOME: /models/huggingface
+
+volumes:
+  laya_models:
