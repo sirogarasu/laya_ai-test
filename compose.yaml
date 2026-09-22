@@ -8,6 +8,8 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    ports:
+      - "127.0.0.1:7860:7860"
     volumes:
       - laya_models:/models/huggingface
     environment:

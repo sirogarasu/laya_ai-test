@@ -8,8 +8,8 @@ WORKDIR /app
 
 # Install the CUDA 12.8 build of PyTorch for NVIDIA GPU inference.
 RUN python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cu128 torch==2.9.1 \
-    && python -m pip install --no-cache-dir laya==0.3.4
+    && python -m pip install --no-cache-dir laya==0.3.4 "gradio>=5,<7"
 
-COPY example.py /app/example.py
+COPY app.py /app/app.py
 
-CMD ["python", "example.py"]
+CMD ["python", "app.py"]

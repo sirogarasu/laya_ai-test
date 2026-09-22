@@ -1,21 +1,21 @@
-# Laya Docker 環境
+# Laya ローカル GUI
 
-記事で紹介された Laya の判断モデルを、WSL 2 上の NVIDIA GPU を使い、PyTorch の CUDA 対応版で動かします。MLX は使用しません。
+Laya の多言語モデルを NVIDIA GPU で動かし、ブラウザから問い合わせ文を判定します。WSL 2 上の Docker Compose と、コンテナから利用できる NVIDIA GPU が必要です。
 
-## 実行
-
-NVIDIA GPU をコンテナに公開できる Docker Compose が使える WSL 2 ホストで、このディレクトリから実行します。`docker/` に Dockerfile とコンテナ内で実行するサンプルを置いています。
+## 起動
 
 ```sh
 docker compose up --build
 ```
 
-初回は Hugging Face から多言語モデルをダウンロードします。モデルは `laya_models` ボリュームに保存され、コンテナを作り直しても再利用されます。サンプルは日本語の問い合わせを分類します。
+モデルの読み込みが終わったら、ホストのブラウザで <http://localhost:7860> を開きます。文章を入力して「判定」を押すと、担当部署、返金希望スコア、詳細 JSON が表示されます。画面はローカルホストにだけ公開されます。終了するときはターミナルで Ctrl+C を押します。
 
-サンプルを編集した後に再実行する場合は、同じコマンドでイメージを再ビルドしてください。
+初回は Hugging Face からモデルをダウンロードします。モデルは `laya_models` ボリュームに保存され、再起動後も再利用されます。通信が途中で切れた場合は最大4回再試行します。
 
-## 注意
+担当部署は `billing`、`technical`、`sales` の3種類です。返金希望スコアや信頼度はモデルの出力であり、重要な処理を自動実行する前に結果を確認してください。判定項目は `docker/app.py` の `SCHEMA` で変更できます。
 
-記事の高速な推論値は Apple Silicon の MLX を使った結果です。この構成は RTX 4070 Ti SUPER の CUDA 推論です。MLX の測定値とは実行環境が異なります。GPU をコンテナに公開できない場合、サンプルはエラーを出して終了します。Docker Desktop を使う場合は WSL 2 バックエンドと NVIDIA の Windows ドライバーが必要です。
+## 補足
 
-参考: [Laya 公式リポジトリ](https://github.com/NandhaKishorM/laya)、[紹介記事](https://zenn.dev/mizchi/articles/laya-mlx-60fps)
+`docker/example.py` は以前の1件だけ判定するサンプルとして残しています。記事の高速な推論値は Apple Silicon の MLX を使った結果で、この構成の CUDA 推論とは実行環境が異なります。
+
+参考: [Laya 公式リポジトリ](https://github.com/NandhaKishorM/laya)
